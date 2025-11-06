@@ -52,6 +52,14 @@ def parse_chordpro(text: str) -> List[SongData]:
         section_content = section_content.replace("\n", " ")
         section_content = re.sub(r"\s{2,}", " ", section_content).strip()
 
+        # --- Replace other unwanted characters ---
+        section_content = section_content.replace("-", "")
+        section_content = section_content.replace("|", "")
+        section_content = section_content.replace("/", "")
+        
+        # --- Strip ---
+        section_content = section_content.strip()
+
         sections.append(SongData(
             title=title,
             key=key,
@@ -62,7 +70,7 @@ def parse_chordpro(text: str) -> List[SongData]:
 
     return sections
 
-def parse_data(data_raw: List[RawRepositoryFile]) -> List[SongData]:
+def parse_and_chunk(data_raw: List[RawRepositoryFile]) -> List[SongData]:
     data_parsed = []
     
     for f in data_raw:
