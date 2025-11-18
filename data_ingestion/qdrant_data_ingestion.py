@@ -1,5 +1,5 @@
 import github_data_reader as reader
-import chordpro_parser as parser
+import data_ingestion.chordpro_parser as parser
 
 songs = reader.read_github_data('Asacri', 'asacriband-chords')
 chunks = parser.parse_and_chunk(songs)

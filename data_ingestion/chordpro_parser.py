@@ -1,7 +1,7 @@
 import re
 from typing import List
 from dataclasses import dataclass
-from github_data_reader import RawRepositoryFile
+from data_ingestion.github_data_reader import RawRepositoryFile
 
 @dataclass
 class SongData:
