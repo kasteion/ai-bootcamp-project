@@ -17,16 +17,16 @@ def run_agent_sync(user_prompt: str):
     return asyncio.run(run_agent(user_prompt))
 
 def format_output(output):
-    output = ["Te recomiendo tocar las siguientes canciones:\n"]
+    response = ["Te recomiendo tocar las siguientes canciones:\n"]
     evaluation = output.repertoireEvaluation
     for song in evaluation.songScores:
-        output.append(f"  - '{song.title}' en clave de {song.key} con una relevancia del: {song.score}%\n")
+        response.append(f"  - '{song.title}' en clave de {song.key} con una relevancia del: {song.score}%\n")
 
-    output.append(f"\nLuego de la evaluación este repertorio tiene una relvancia del {evaluation.score}%\n")
+    response.append(f"\nLuego de la evaluación este repertorio tiene una relvancia del {evaluation.score}%\n")
 
-    output.append("\nJustificación:\n")
-    output.append(evaluation.justification)
-    return "\n".join(output)
+    response.append("\nJustificación:\n")
+    response.append(evaluation.justification)
+    return "\n".join(response)
 
 def main():
     if len(sys.argv) != 2:
