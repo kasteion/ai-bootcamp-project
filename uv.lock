@@ -27,6 +27,7 @@ dependencies = [
     { name = "pydantic-ai" },
     { name = "qdrant-client", extra = ["fastembed"] },
     { name = "requests" },
+    { name = "tqdm" },
 ]
 
 [package.dev-dependencies]
@@ -40,6 +41,7 @@ requires-dist = [
     { name = "pydantic-ai", specifier = ">=1.11.0" },
     { name = "qdrant-client", extras = ["fastembed"], specifier = ">=1.15.1" },
     { name = "requests", specifier = ">=2.32.5" },
+    { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
 [package.metadata.requires-dev]

@@ -9,6 +9,7 @@ dependencies = [
     "pydantic-ai>=1.11.0",
     "qdrant-client[fastembed]>=1.15.1",
     "requests>=2.32.5",
+    "tqdm>=4.67.1",
 ]
 
 [dependency-groups]

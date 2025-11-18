@@ -2,12 +2,27 @@ from qdrant_client import QdrantClient, models
 from typing import TypedDict, List
 import data_ingestion.github_data_reader as reader
 import data_ingestion.chordpro_parser as parser
+from fastembed import TextEmbedding
+from fastembed.common.model_description import ModelSource, PoolingType
+from threading import Lock
+
+_EMBED_LOCK = Lock()
 
 dimensionality = 384
-model_name = 'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2'
+model_name = 'multilingual'
 collection_name = "asacriband-chords"
 
-qd_client = QdrantClient('http://localhost:6333')
+TextEmbedding.add_custom_model(
+    model=model_name,
+    pooling=PoolingType.MEAN,
+    normalization=True,
+    sources=ModelSource(hf="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
+    dim=dimensionality
+)
+model = TextEmbedding(model_name=model_name)
+
+qd_client = QdrantClient(url='http://localhost:6333')
+# qd_client._model_embedder._batch_accumulator = None
 
 songs = reader.read_github_data('Asacri', 'asacriband-chords')
 chunks = parser.parse_and_chunk(songs)
@@ -32,21 +47,22 @@ class SearchTools:
                 - content (str): The content of the song that matched.
                 - key (str): The key the of the song.
         """
-        vector = models.Document(text=query, model=model_name)
+        with _EMBED_LOCK:
+            vector = models.Document(text=query, model=model_name)
 
-        query_points = qd_client.query_points(
-            collection_name=collection_name,
-            query=vector,
-            limit=num_results,
-            with_payload=True
-        )
+            query_points = qd_client.query_points(
+                collection_name=collection_name,
+                query=vector,
+                limit=num_results,
+                with_payload=True
+            )
 
-        results = []
+            results = []
 
-        for point in query_points.points:
-            results.append(point.payload)
+            for point in query_points.points:
+                results.append(point.payload)
 
-        return results
+            return results
 
     def get_full_song_by_title(self, title: str) -> SearchResult:
         """
